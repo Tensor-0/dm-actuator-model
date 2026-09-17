@@ -1,0 +1,2 @@
+# 原始 PNG 是二进制，明确标注避免 diff 尝试
+*.png binary

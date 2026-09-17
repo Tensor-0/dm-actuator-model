@@ -1,0 +1,75 @@
+{
+  "tau_omega": {
+    "omega_per_torque": -0.118555368069901,
+    "no_load_speed_rad_s": 6.401744595619147,
+    "no_load_speed_rpm": 61.13215780827683,
+    "stall_torque_measured_Nm": 53.99793109194885,
+    "r_squared": 0.9915684943797621,
+    "pearson_r": -0.9957753232430306,
+    "n_points": 97,
+    "measured_range": {
+      "torque_Nm": [
+        3.604,
+        19.351
+      ],
+      "omega_rad_s": [
+        3.9817,
+        5.9004
+      ]
+    }
+  },
+  "tau_omega_model": {
+    "equation_rad_s": "omega = -0.118555*tau + 6.401745",
+    "equation_rpm": "rpm = -1.132120*tau + 61.132158",
+    "valid_range": {
+      "torque_Nm": [
+        3.604,
+        19.351
+      ],
+      "omega_rad_s": [
+        3.9817,
+        5.9004
+      ]
+    }
+  },
+  "isaac_lab_dcmotor": {
+    "_comment": "两套互斥：τ-ω 直线的斜率由 (no_load_speed, stall_torque) 决定，不能各自独立取",
+    "no_load_speed_rad_s": 6.401744595619147,
+    "continuous_torque_Nm": 12.0,
+    "variant_datasheet": {
+      "stall_torque_Nm": 40.0,
+      "implied_slope_rad_s_per_Nm": -6.248296757632735,
+      "corner_velocity_rad_s": 4.4812212169334025,
+      "provenance": "说明书标称值（未实测）"
+    },
+    "variant_measured": {
+      "stall_torque_Nm": 53.99793109194885,
+      "implied_slope_rad_s_per_Nm": -0.118555368069901,
+      "corner_velocity_rad_s": 4.979080178780335,
+      "provenance": "⚠️ 由曲线线性外推，超出实测区（实测只到 19.35 N·m）"
+    }
+  },
+  "efficiency": {
+    "peak": {
+      "torque_Nm": 11.071,
+      "eff_pct": 65.58
+    },
+    "at_rated_12Nm": {
+      "torque_Nm": 12.045,
+      "eff_pct": 65.24
+    },
+    "at_low_load_3_3Nm": {
+      "torque_Nm": 3.279,
+      "eff_pct": 34.54
+    },
+    "note": "轻载效率很低（<35%）；这是准直驱电机小扭矩工况的固有特性"
+  },
+  "thermal": {
+    "T_inf_C": 110.19055747342908,
+    "T_0_C": 72.5133452522398,
+    "tau_s": 263.3595021105556,
+    "rms_residual_C": 0.6576314696508607,
+    "n_points": 54,
+    "caveat": "单一工作点（12 N·m 恒扭矩）的温升，未做功率相关性标定"
+  }
+}

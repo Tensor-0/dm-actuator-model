@@ -1,0 +1,487 @@
+[
+ {
+  "torque_Nm": 3.604,
+  "speed_rpm": 56.344,
+  "omega_rad_s": 5.9004
+ },
+ {
+  "torque_Nm": 3.766,
+  "speed_rpm": 56.21,
+  "omega_rad_s": 5.8863
+ },
+ {
+  "torque_Nm": 3.929,
+  "speed_rpm": 56.008,
+  "omega_rad_s": 5.8651
+ },
+ {
+  "torque_Nm": 4.091,
+  "speed_rpm": 55.806,
+  "omega_rad_s": 5.844
+ },
+ {
+  "torque_Nm": 4.253,
+  "speed_rpm": 55.671,
+  "omega_rad_s": 5.8298
+ },
+ {
+  "torque_Nm": 4.416,
+  "speed_rpm": 55.536,
+  "omega_rad_s": 5.8157
+ },
+ {
+  "torque_Nm": 4.578,
+  "speed_rpm": 55.469,
+  "omega_rad_s": 5.8087
+ },
+ {
+  "torque_Nm": 4.74,
+  "speed_rpm": 55.267,
+  "omega_rad_s": 5.7875
+ },
+ {
+  "torque_Nm": 4.903,
+  "speed_rpm": 55.132,
+  "omega_rad_s": 5.7734
+ },
+ {
+  "torque_Nm": 5.065,
+  "speed_rpm": 54.93,
+  "omega_rad_s": 5.7523
+ },
+ {
+  "torque_Nm": 5.227,
+  "speed_rpm": 54.661,
+  "omega_rad_s": 5.724
+ },
+ {
+  "torque_Nm": 5.39,
+  "speed_rpm": 54.526,
+  "omega_rad_s": 5.7099
+ },
+ {
+  "torque_Nm": 5.552,
+  "speed_rpm": 54.458,
+  "omega_rad_s": 5.7029
+ },
+ {
+  "torque_Nm": 5.714,
+  "speed_rpm": 54.458,
+  "omega_rad_s": 5.7029
+ },
+ {
+  "torque_Nm": 5.877,
+  "speed_rpm": 54.189,
+  "omega_rad_s": 5.6747
+ },
+ {
+  "torque_Nm": 6.039,
+  "speed_rpm": 53.987,
+  "omega_rad_s": 5.6535
+ },
+ {
+  "torque_Nm": 6.201,
+  "speed_rpm": 53.852,
+  "omega_rad_s": 5.6394
+ },
+ {
+  "torque_Nm": 6.364,
+  "speed_rpm": 53.717,
+  "omega_rad_s": 5.6253
+ },
+ {
+  "torque_Nm": 6.526,
+  "speed_rpm": 53.583,
+  "omega_rad_s": 5.6112
+ },
+ {
+  "torque_Nm": 6.688,
+  "speed_rpm": 53.448,
+  "omega_rad_s": 5.5971
+ },
+ {
+  "torque_Nm": 6.851,
+  "speed_rpm": 53.313,
+  "omega_rad_s": 5.583
+ },
+ {
+  "torque_Nm": 7.013,
+  "speed_rpm": 53.246,
+  "omega_rad_s": 5.5759
+ },
+ {
+  "torque_Nm": 7.175,
+  "speed_rpm": 53.044,
+  "omega_rad_s": 5.5547
+ },
+ {
+  "torque_Nm": 7.338,
+  "speed_rpm": 52.842,
+  "omega_rad_s": 5.5336
+ },
+ {
+  "torque_Nm": 7.5,
+  "speed_rpm": 52.64,
+  "omega_rad_s": 5.5124
+ },
+ {
+  "torque_Nm": 7.662,
+  "speed_rpm": 52.505,
+  "omega_rad_s": 5.4983
+ },
+ {
+  "torque_Nm": 7.825,
+  "speed_rpm": 52.303,
+  "omega_rad_s": 5.4772
+ },
+ {
+  "torque_Nm": 7.987,
+  "speed_rpm": 52.101,
+  "omega_rad_s": 5.456
+ },
+ {
+  "torque_Nm": 8.149,
+  "speed_rpm": 51.966,
+  "omega_rad_s": 5.4419
+ },
+ {
+  "torque_Nm": 8.312,
+  "speed_rpm": 51.764,
+  "omega_rad_s": 5.4207
+ },
+ {
+  "torque_Nm": 8.474,
+  "speed_rpm": 51.562,
+  "omega_rad_s": 5.3996
+ },
+ {
+  "torque_Nm": 8.636,
+  "speed_rpm": 51.495,
+  "omega_rad_s": 5.3925
+ },
+ {
+  "torque_Nm": 8.799,
+  "speed_rpm": 51.36,
+  "omega_rad_s": 5.3784
+ },
+ {
+  "torque_Nm": 8.961,
+  "speed_rpm": 51.225,
+  "omega_rad_s": 5.3643
+ },
+ {
+  "torque_Nm": 9.123,
+  "speed_rpm": 51.023,
+  "omega_rad_s": 5.3431
+ },
+ {
+  "torque_Nm": 9.286,
+  "speed_rpm": 50.888,
+  "omega_rad_s": 5.329
+ },
+ {
+  "torque_Nm": 9.448,
+  "speed_rpm": 50.686,
+  "omega_rad_s": 5.3079
+ },
+ {
+  "torque_Nm": 9.61,
+  "speed_rpm": 50.619,
+  "omega_rad_s": 5.3008
+ },
+ {
+  "torque_Nm": 9.773,
+  "speed_rpm": 50.484,
+  "omega_rad_s": 5.2867
+ },
+ {
+  "torque_Nm": 9.935,
+  "speed_rpm": 50.282,
+  "omega_rad_s": 5.2655
+ },
+ {
+  "torque_Nm": 10.097,
+  "speed_rpm": 50.147,
+  "omega_rad_s": 5.2514
+ },
+ {
+  "torque_Nm": 10.26,
+  "speed_rpm": 49.945,
+  "omega_rad_s": 5.2303
+ },
+ {
+  "torque_Nm": 10.422,
+  "speed_rpm": 49.811,
+  "omega_rad_s": 5.2162
+ },
+ {
+  "torque_Nm": 10.584,
+  "speed_rpm": 49.676,
+  "omega_rad_s": 5.2021
+ },
+ {
+  "torque_Nm": 10.747,
+  "speed_rpm": 49.406,
+  "omega_rad_s": 5.1738
+ },
+ {
+  "torque_Nm": 10.909,
+  "speed_rpm": 49.272,
+  "omega_rad_s": 5.1597
+ },
+ {
+  "torque_Nm": 11.071,
+  "speed_rpm": 49.137,
+  "omega_rad_s": 5.1456
+ },
+ {
+  "torque_Nm": 11.234,
+  "speed_rpm": 49.002,
+  "omega_rad_s": 5.1315
+ },
+ {
+  "torque_Nm": 11.396,
+  "speed_rpm": 48.8,
+  "omega_rad_s": 5.1104
+ },
+ {
+  "torque_Nm": 11.558,
+  "speed_rpm": 48.598,
+  "omega_rad_s": 5.0892
+ },
+ {
+  "torque_Nm": 11.721,
+  "speed_rpm": 48.329,
+  "omega_rad_s": 5.061
+ },
+ {
+  "torque_Nm": 11.883,
+  "speed_rpm": 48.261,
+  "omega_rad_s": 5.0539
+ },
+ {
+  "torque_Nm": 12.045,
+  "speed_rpm": 48.194,
+  "omega_rad_s": 5.0469
+ },
+ {
+  "torque_Nm": 12.208,
+  "speed_rpm": 47.992,
+  "omega_rad_s": 5.0257
+ },
+ {
+  "torque_Nm": 12.37,
+  "speed_rpm": 47.723,
+  "omega_rad_s": 4.9975
+ },
+ {
+  "torque_Nm": 12.532,
+  "speed_rpm": 47.52,
+  "omega_rad_s": 4.9763
+ },
+ {
+  "torque_Nm": 12.695,
+  "speed_rpm": 47.318,
+  "omega_rad_s": 4.9552
+ },
+ {
+  "torque_Nm": 12.857,
+  "speed_rpm": 47.116,
+  "omega_rad_s": 4.934
+ },
+ {
+  "torque_Nm": 13.019,
+  "speed_rpm": 46.914,
+  "omega_rad_s": 4.9128
+ },
+ {
+  "torque_Nm": 13.182,
+  "speed_rpm": 46.712,
+  "omega_rad_s": 4.8917
+ },
+ {
+  "torque_Nm": 13.344,
+  "speed_rpm": 46.51,
+  "omega_rad_s": 4.8705
+ },
+ {
+  "torque_Nm": 13.506,
+  "speed_rpm": 46.308,
+  "omega_rad_s": 4.8494
+ },
+ {
+  "torque_Nm": 13.669,
+  "speed_rpm": 46.106,
+  "omega_rad_s": 4.8282
+ },
+ {
+  "torque_Nm": 13.831,
+  "speed_rpm": 45.904,
+  "omega_rad_s": 4.807
+ },
+ {
+  "torque_Nm": 13.994,
+  "speed_rpm": 45.702,
+  "omega_rad_s": 4.7859
+ },
+ {
+  "torque_Nm": 14.318,
+  "speed_rpm": 45.365,
+  "omega_rad_s": 4.7506
+ },
+ {
+  "torque_Nm": 14.481,
+  "speed_rpm": 45.23,
+  "omega_rad_s": 4.7365
+ },
+ {
+  "torque_Nm": 14.643,
+  "speed_rpm": 44.961,
+  "omega_rad_s": 4.7083
+ },
+ {
+  "torque_Nm": 14.805,
+  "speed_rpm": 44.691,
+  "omega_rad_s": 4.6801
+ },
+ {
+  "torque_Nm": 14.968,
+  "speed_rpm": 44.557,
+  "omega_rad_s": 4.666
+ },
+ {
+  "torque_Nm": 15.13,
+  "speed_rpm": 44.422,
+  "omega_rad_s": 4.6519
+ },
+ {
+  "torque_Nm": 15.292,
+  "speed_rpm": 44.018,
+  "omega_rad_s": 4.6095
+ },
+ {
+  "torque_Nm": 15.455,
+  "speed_rpm": 43.748,
+  "omega_rad_s": 4.5813
+ },
+ {
+  "torque_Nm": 15.617,
+  "speed_rpm": 43.614,
+  "omega_rad_s": 4.5672
+ },
+ {
+  "torque_Nm": 15.779,
+  "speed_rpm": 43.412,
+  "omega_rad_s": 4.546
+ },
+ {
+  "torque_Nm": 15.942,
+  "speed_rpm": 43.075,
+  "omega_rad_s": 4.5108
+ },
+ {
+  "torque_Nm": 16.104,
+  "speed_rpm": 42.94,
+  "omega_rad_s": 4.4967
+ },
+ {
+  "torque_Nm": 16.266,
+  "speed_rpm": 42.873,
+  "omega_rad_s": 4.4896
+ },
+ {
+  "torque_Nm": 16.429,
+  "speed_rpm": 42.603,
+  "omega_rad_s": 4.4614
+ },
+ {
+  "torque_Nm": 16.591,
+  "speed_rpm": 42.334,
+  "omega_rad_s": 4.4332
+ },
+ {
+  "torque_Nm": 16.753,
+  "speed_rpm": 42.132,
+  "omega_rad_s": 4.412
+ },
+ {
+  "torque_Nm": 16.916,
+  "speed_rpm": 41.93,
+  "omega_rad_s": 4.3909
+ },
+ {
+  "torque_Nm": 17.078,
+  "speed_rpm": 41.458,
+  "omega_rad_s": 4.3415
+ },
+ {
+  "torque_Nm": 17.24,
+  "speed_rpm": 41.256,
+  "omega_rad_s": 4.3203
+ },
+ {
+  "torque_Nm": 17.403,
+  "speed_rpm": 41.189,
+  "omega_rad_s": 4.3133
+ },
+ {
+  "torque_Nm": 17.565,
+  "speed_rpm": 41.054,
+  "omega_rad_s": 4.2992
+ },
+ {
+  "torque_Nm": 17.727,
+  "speed_rpm": 40.65,
+  "omega_rad_s": 4.2568
+ },
+ {
+  "torque_Nm": 17.89,
+  "speed_rpm": 40.448,
+  "omega_rad_s": 4.2357
+ },
+ {
+  "torque_Nm": 18.052,
+  "speed_rpm": 40.246,
+  "omega_rad_s": 4.2145
+ },
+ {
+  "torque_Nm": 18.214,
+  "speed_rpm": 39.976,
+  "omega_rad_s": 4.1863
+ },
+ {
+  "torque_Nm": 18.377,
+  "speed_rpm": 39.774,
+  "omega_rad_s": 4.1651
+ },
+ {
+  "torque_Nm": 18.539,
+  "speed_rpm": 39.437,
+  "omega_rad_s": 4.1299
+ },
+ {
+  "torque_Nm": 18.701,
+  "speed_rpm": 38.898,
+  "omega_rad_s": 4.0734
+ },
+ {
+  "torque_Nm": 18.864,
+  "speed_rpm": 38.629,
+  "omega_rad_s": 4.0452
+ },
+ {
+  "torque_Nm": 19.026,
+  "speed_rpm": 38.36,
+  "omega_rad_s": 4.017
+ },
+ {
+  "torque_Nm": 19.188,
+  "speed_rpm": 38.157,
+  "omega_rad_s": 3.9958
+ },
+ {
+  "torque_Nm": 19.351,
+  "speed_rpm": 38.023,
+  "omega_rad_s": 3.9817
+ }
+]

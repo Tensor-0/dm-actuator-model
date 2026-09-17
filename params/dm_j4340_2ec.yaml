@@ -1,0 +1,136 @@
+# DM-J4340-2EC (24V) 执行器模型参数
+# =============================================================================
+# 数据来源：达妙官方 Gitee 台架实测曲线（非仿真、非推测）
+#   https://gitee.com/kit-miao/DM-J4340-2EC
+#   └── 测试数据/性能曲线/V1.1/{扭矩效率,速度效率,温升,温升14Nm}.png
+#
+# 提取方式：tools/extract_curve.py（像素级标定 + 最小二乘回归）
+# 拟合方式：tools/fit_motor_model.py
+# 自动生成版：params/fitted_model.json（本文件是同一结果的人工整理版）
+#
+# ⚠️ 使用前必读 "limitations" 一节 —— 尤其是外推边界。
+# =============================================================================
+
+motor:
+  model: DM-J4340-2EC
+  voltage_V: 24
+  gear_ratio: 40
+  rated_torque_Nm: 12
+  rated_speed_rpm: 36
+
+# -----------------------------------------------------------------------------
+# ① 转矩-转速特性（τ-ω）
+# -----------------------------------------------------------------------------
+# 这是本仓库最核心的数据：`forcerange=±28` 那种"与速度无关的常数上限"
+# 是错的，真机扭矩随转速明显下降。
+torque_speed:
+  # 线性拟合（97 个实测点，r² = 0.9916）
+  equation_rad_s: "omega = -0.118555 * tau + 6.401745"
+  equation_rpm:   "rpm   = -1.132169 * tau + 61.128"
+
+  # —— 对齐 Isaac Lab `DCMotor` 的字段 ——
+  # 模型: tau_max(qd) = clip(tau_stall * (1 - qd/qd_max), -inf, tau_con)
+  isaac_lab_dcmotor:
+    no_load_speed_rad_s: 6.4017      # 实测外推（τ=0）
+    continuous_torque_Nm: 12.0       # 额定
+
+    # ⚠️ 关键：Isaac Lab 的直线由 (qd_max, tau_stall) 两点定，
+    #    斜率 = tau_stall/qd_max。所以两个值不能各自独立选！
+    #    实测斜率 8.43 N·m/(rad/s)  vs  标称40 隐含的 6.25 —— 差 35%。
+    #    下面两套互斥，按用途选一套。
+    variant_datasheet:               # 保守：不夸大高速段能力
+      stall_torque_Nm: 40.0          # 说明书标称峰值
+      implied_slope_Nm_per_rad_s: 6.2483
+      corner_velocity_rad_s: 4.4812  # τ=τ_con 处的 ω
+      provenance: 说明书标称，未实测
+    variant_measured:                # 忠于本次曲线
+      stall_torque_Nm: 54.0
+      implied_slope_Nm_per_rad_s: 8.4349
+      corner_velocity_rad_s: 4.9791
+      provenance: "⚠️ 线性外推，远超实测区（实测只到 19.35 N·m）"
+
+  measured_range:                    # 实测覆盖范围——外推风险自评的依据
+    torque_Nm: [3.60, 19.35]
+    omega_rad_s: [3.982, 5.900]
+    speed_rpm: [38.0, 56.3]
+
+# -----------------------------------------------------------------------------
+# ② 效率特性（Isaac Lab 的 DCMotor 没建这一项）
+# -----------------------------------------------------------------------------
+efficiency:
+  peak:
+    eff_pct: 65.58
+    torque_Nm: 11.07                 # 峰值出现在额定点附近
+  at_rated:
+    eff_pct: 65.24
+    torque_Nm: 12.05
+    power_in_W: 77.3
+    power_out_W: 47.3
+  at_low_load:
+    eff_pct: 31.1
+    torque_Nm: 3.28
+  note: >
+    轻载效率极低（3 N·m 时仅 ~31%）—— 这是准直驱电机的固有特性
+    （固定损耗摊不薄）。若做能耗惩罚项，低扭矩区会被严重高估。
+
+# -----------------------------------------------------------------------------
+# ③ 热特性（Isaac Lab 也没建）
+# -----------------------------------------------------------------------------
+thermal:
+  model: "T(t) = T_inf - (T_inf - T_0) * exp(-t/tau)"
+  T_inf_C: 110.2
+  T_0_C: 72.5
+  tau_s: 263.4
+  rms_residual_C: 0.66               # 拟合质量很好
+  operating_point: "12 N·m 恒扭矩"
+  caveat: >
+    只有一个工作点的数据，无法反推热阻/热容的功率依赖。
+    要建完整热模型需补多个扭矩下的温升曲线。
+
+# -----------------------------------------------------------------------------
+# ⚠️ 限制与已知问题（随参数一起发布，勿删）
+# -----------------------------------------------------------------------------
+limitations:
+  - id: extrapolation
+    severity: high
+    text: >
+      τ-ω 直线**只在实测区（3.6~19.35 N·m / 38~56 rpm）内可信**。
+      不要外推到高转速：按线性式算 ω=8.63 rad/s（RPO 参考步态的膝峰速）
+      会得到负扭矩，物理上无意义。该电机实际到不了那个转速。
+
+  - id: stall_unverified
+    severity: medium
+    text: >
+      堵转扭矩**没有实测**。曲线只到 19.35 N·m，说明书标称峰值 40 N·m
+      未被这份数据验证。线性外推得 54 N·m，与标称 40 相差 35%。
+
+  - id: duplicate_thermal_image
+    severity: low
+    text: >
+      `温升.png` 与 `温升14Nm.png` 的**曲线逐像素完全相同**
+      （仅标题文字 238 px 不同）。后者是副本，不是独立的 14 N·m 工况。
+      因此热模型只有一个工作点。
+
+  - id: two_test_protocols
+    severity: info
+    text: >
+      两张图是**不同测试协议**，不要混用：
+      扭矩效率.png = 自然变速加载（→ τ-ω 曲线来源）
+      速度效率.png = 恒 35 rpm 台架（→ 效率/电流来源）
+      实测恒速台架转速 35.87±0.24 rpm，确认是恒速协议。
+
+  - id: protocol_loss
+    severity: medium
+    text: >
+      达妙**只发布了 PNG 图片，没有原始 CSV**。本仓库的数据是从像素
+      反推的，存在标定误差（估 ±1~2%）。若能拿到原始数据应替换。
+
+# -----------------------------------------------------------------------------
+# 与目标的对照
+# -----------------------------------------------------------------------------
+comparison_to_datasheet:
+  rated_torque:  {datasheet: 12,   measured: "效率在 12 附近见顶",       verdict: ok }
+  rated_speed:   {datasheet: 36,   measured: "覆盖 38~56 rpm",           verdict: ok }
+  no_load_speed: {datasheet: 56,   measured: 61.1,                       verdict: "偏高 9%" }
+  peak_torque:   {datasheet: 40,   measured: "只到 19.35",               verdict: unverified }
+  peak_efficiency: {datasheet: null, measured: 65.58,                    verdict: "新增信息" }
