@@ -55,6 +55,43 @@ torque_speed:
     speed_rpm: [38.0, 56.3]
 
 # -----------------------------------------------------------------------------
+# ①b MuJoCo 原生 `<dcmotor>` 用法（⭐ 推荐路径，无需自写代码）
+# -----------------------------------------------------------------------------
+# MuJoCo 3.10+ 原生支持 `<dcmotor>`：含反电动势、电流饱和、电感、
+# 热模型、齿槽转矩、LuGre 摩擦。文档：
+#   mujoco.readthedocs.io/en/stable/XMLreference.html#actuator-dcmotor
+# 技术说明（含推导）：mujoco.readthedocs.io/en/stable/_static/dcmotor.pdf
+#
+#   <actuator>
+#     <!-- nominal = "voltage stall_torque no_load_speed" -->
+#     <dcmotor name="leg_l1_joint_motor" joint="leg_l1_joint"
+#              nominal="24 40 6.4017"
+#              input="pos vel ff"
+#              saturation="12 0 0"
+#              forcerange="-28 28"/>
+#   </actuator>
+#
+# MuJoCo 自动推出:  K = V/ω_no_load = 3.74900
+#                   R = K·V/τ_stall  = 2.24940
+# 力矩公式（本机数值反推验证）:  τ = (K/R)·v − (K²/R)·ω
+#   dτ/dv = 1.66667 (= K/R)  |  dτ/dω = −6.24834 (= −K²/R)
+# → 实测验证：空载稳态 ω = V/K，扫 24/18/12/6/3 V 误差 0.00%
+# 可复现: tools/verify_mujoco_dcmotor.py
+mujoco_dcmotor:
+  nominal: "24 40 6.4017"          # voltage stall_torque no_load_speed
+  input: "pos vel ff"              # 对应达妙 MIT 的 pos / vel / t_ff
+  saturation_torque_Nm: 12.0       # 连续扭矩（自动设 forcerange）
+  forcerange: [-28, 28]            # 峰值（保留现有 XML 的值）
+  derived_by_mujoco:
+    K_Nm_per_A: 3.7490             # = 24 / 6.4017
+    R_ohm: 2.2494                  # = K·24 / 40
+  verified: "2026-09-17 本机实测（MuJoCo 3.11.0），扫电压误差 0.00%"
+  note: >
+    ⚠️ stall_torque 取标称 40（非曲线外推 54）。原因：nominal 由两点定义整条
+    直线（斜率 = ω_no_load/τ_stall），两者不能独立选；40 更保守，不会高估
+    高速段能力。曲线外推值 54 见 torque_speed.isaac_lab_dcmotor.variant_measured。
+
+# -----------------------------------------------------------------------------
 # ② 效率特性（Isaac Lab 的 DCMotor 没建这一项）
 # -----------------------------------------------------------------------------
 efficiency:

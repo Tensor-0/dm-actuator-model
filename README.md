@@ -36,9 +36,11 @@
 ├── tools/
 │   ├── extract_curve.py         # 从 PNG 提取曲线（像素级标定）
 │   ├── fit_motor_model.py       # 拟合 τ-ω / 效率 / 热模型
-│   └── verify_params.py         # 自检：参数与数据是否一致
+│   ├── verify_params.py         # 自检：参数与数据是否一致
+│   └── verify_mujoco_dcmotor.py # ⭐ 实测验证参数能驱动 MuJoCo <dcmotor>
 └── docs/
-    └── 执行器建模调研_20260917.md  # 调研：社区怎么做执行器建模
+    ├── 执行器建模调研_20260917.md        # 调研①：社区怎么做执行器建模
+    └── MuJoCo执行器建模_调研_20260917.md  # 调研②：MuJoCo 原生 <dcmotor> + mjlab（含更正）
 ```
 
 ---
@@ -54,6 +56,9 @@ python3 tools/fit_motor_model.py --data data --out params/fitted_model.json
 
 # 3) 自检（改了参数务必跑）
 python3 tools/verify_params.py
+
+# 4) 验证参数能真的驱动 MuJoCo <dcmotor>（需要 mujoco）
+/home/zhan/UniLab/.venv/bin/python tools/verify_mujoco_dcmotor.py
 ```
 
 依赖：`numpy`, `Pillow`, `pyyaml`,（拟合热模型需要 `scipy`）
@@ -107,27 +112,53 @@ python3 tools/verify_params.py
 
 | 层次 | 代表 | 我们能用的部分 |
 |---|---|---|
-| 工业范式 | **Isaac Lab `DCMotor`** | ⭐ 我们的曲线**正好是它的参数形式** |
-| 进阶范式 | **PACE**（ETH，Apache-2.0） | "只扩展子类、不改内核"的策略 |
-| 数据驱动 | ActuatorNet 系列 | ⚠️ 需要真机数据，暂时走不了 |
+| **MuJoCo 原生** | ⭐ **`<dcmotor>` 元素** | **直接可用**：填 3 个数（见上节） |
+| **MuJoCo 生态库** | ⭐ **`mujocolab/mjlab`**（⭐3084） | `dc_actuator.py` / `builtin_actuator.py` / ActuatorNet |
+| 工业范式（Isaac） | Isaac Lab `DCMotor` | 参考；MuJoCo 原生模型**更完整** |
+| 进阶范式 | PACE（ETH，Apache-2.0） | "只扩展子类、不改内核"的策略 |
 | 达妙专属 | 摩擦辨识工具 | 可补摩擦/惯量参数（⚠️ 非商用许可） |
 
-**空白点**：没有任何开源项目发布过 DM-J4340-2EC 的 τ-ω 参数，也没有达妙电机的
-MuJoCo/Isaac 执行器模型 —— **本仓库的数据是可贡献的新内容**。
+**空白点**：没有任何开源项目发布过 DM-J4340-2EC 的 τ-ω 参数 —— **本仓库的数据是可贡献的新内容**。
 
-详见 `docs/执行器建模调研_20260917.md`。
+详见 `docs/执行器建模调研_20260917.md` 和 `docs/MuJoCo执行器建模_调研_20260917.md`。
 
 ---
 
-## 已知的落地障碍
+## ⭐ 怎么用起来：MuJoCo 原生 `<dcmotor>`（三个数即可）
 
-**MuJoCo 原生表达不了 τ-ω 曲线**：
+**MuJoCo 3.10+ 原生就有 `<dcmotor>` 执行器**（含反电动势、电流饱和、电感、热模型、
+齿槽转矩、LuGre 摩擦）—— 不需要自己写代码。
 
-- `forcerange` 只能给**常数**上限（与速度无关）
-- `dyntype="filterexact"` 只能做一阶低通/延迟
-- `dyntype="dcmotor"` 有电机动态，但 **ctrl 语义会从"角度"变"电压"**，令现有位置动作项失效
+把 MJCF 里的 `<position>` 换成：
 
-**⇒ 必须在 Python 侧实现**（自己算 τ 并限幅）。调研已探明可行的挂载点，见 `docs/`。
+```xml
+<actuator>
+  <!-- nominal = "voltage stall_torque no_load_speed" -->
+  <dcmotor name="leg_l1_joint_motor" joint="leg_l1_joint"
+           nominal="24 40 6.4017"
+           input="pos vel ff"      <!-- 对应达妙 MIT 的 pos/vel/t_ff -->
+           saturation="12 0 0"     <!-- 连续扭矩 12 N·m -->
+           forcerange="-28 28"/>
+</actuator>
+```
+
+MuJoCo 会**自动推出** `K = V/ω_no_load = 3.749`、`R = K·V/τ_stall = 2.249`，
+力矩公式为 `τ = (K/R)·v − (K²/R)·ω`（即官方 `τ = (Kt/R)(v − Ke·ω)`）。
+
+验证脚本：`tools/verify_mujoco_dcmotor.py`（实测扫电压，误差 0.00%）
+
+> 另见 `mujocolab/mjlab`（⭐3084, Apache-2.0）：MuJoCo 生态的 Isaac-Lab 风格框架，
+> 有完整的执行器模块（`dc_actuator.py` / `builtin_actuator.py` / `learned_actuator.py`）。
+> 详见 `docs/MuJoCo执行器建模_调研_20260917.md`。
+
+### 仍在本仓库范围外、需要自建的部分
+
+MuJoCo 的 `<dcmotor>` **不含**：
+- 减速比（用 `<actuator gear=>` 单独给）
+- 效率曲线（本仓库的 65.6% 峰值数据可做能量惩罚项）
+- 达妙固件的具体行为（12-bit 量化、Kd 范围 [0,5]）
+
+主干（τ-ω + 反电动势 + 延迟）原生就有。
 
 ---
 
