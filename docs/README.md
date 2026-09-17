@@ -6,6 +6,7 @@
 |---|---|
 | `执行器建模调研_20260917.md` | 第一轮：Isaac Lab `DCMotor` / PACE / ActuatorNet / 达妙摩擦辨识工具 |
 | `MuJoCo执行器建模_调研_20260917.md` | ⭐ 第二轮：**MuJoCo 原生 `<dcmotor>` + `mujocolab/mjlab`**，并更正第一轮 |
+| `评估方法_Q1Q2Q3_20260917.md` | ⭐ **怎么评估改动效果**：Q1 执行器级 / Q2 sim2sim / Q3 A/B 重训 |
 
 ## ⚠️ 两轮结论的差异（务必看第二份）
 

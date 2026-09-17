@@ -37,7 +37,9 @@
 │   ├── extract_curve.py         # 从 PNG 提取曲线（像素级标定）
 │   ├── fit_motor_model.py       # 拟合 τ-ω / 效率 / 热模型
 │   ├── verify_params.py         # 自检：参数与数据是否一致
-│   └── verify_mujoco_dcmotor.py # ⭐ 实测验证参数能驱动 MuJoCo <dcmotor>
+│   ├── verify_mujoco_dcmotor.py # 实测验证（空载 + 力矩公式反推）
+│   ├── verify_dcmotor_loaded.py # ⭐ 负载工况验证（复现官方台架加载测试）
+│   └── plot_tau_omega.py        # ⭐ 生成 τ-ω 叠加图（模型 vs 实测）
 └── docs/
     ├── 执行器建模调研_20260917.md        # 调研①：社区怎么做执行器建模
     └── MuJoCo执行器建模_调研_20260917.md  # 调研②：MuJoCo 原生 <dcmotor> + mjlab（含更正）
@@ -81,13 +83,34 @@ python3 tools/verify_params.py
 
 ---
 
+## ⭐ 验证结果：模型 vs 官方实测
+
+![τ-ω 叠加图](data/tau_omega_overlay.png)
+
+| 口径 | 与官方曲线平均误差 | 最大误差 |
+|---|---|---|
+| **`stall_torque = 54`（本次采用）** | **0.85%** | **3.28%** |
+| `stall_torque = 40`（说明书标称） | 9.94% | 17.00% |
+
+**⇒ 参数文件取 54**，因为这是与官方台架曲线逐点比对（97 点）选出来的，
+不是偏好。误差已落在曲线本身的像素提取噪声（±1~2%）量级内。
+
+复现：
+```bash
+/home/zhan/UniLab/.venv/bin/python tools/verify_dcmotor_loaded.py
+/home/zhan/UniLab/.venv/bin/python tools/plot_tau_omega.py
+```
+
+---
+
 ## ⚠️ 使用前必读的三条限制
 
 1. **不要外推到实测区外**。曲线实测只覆盖 **3.6~19.35 N·m / 38~56 rpm**。
    按线性式算高转速（如 8.63 rad/s）会得到**负扭矩**，物理上无意义。
 
-2. **堵转扭矩未实测**。说明书标称峰值 40 N·m，曲线只到 19.35 N·m。
-   线性外推得 54 N·m，与标称**差 35%** —— 参数文件里两套都给了，按用途选。
+2. **堵转扭矩未实测**。说明书标称峰值 40 N·m，曲线只到 19.35 N·m，
+   线性外推得 54 N·m（与标称差 35%）。**本仓库据实测比对取 54**（见上节），
+   参数文件里两套口径都保留了。
 
 3. **热模型只有一个工作点**（12 N·m 恒扭矩），无法反推热阻的功率依赖。
 
@@ -126,7 +149,7 @@ python3 tools/verify_params.py
 
 ## ⭐ 怎么用起来：MuJoCo 原生 `<dcmotor>`（三个数即可）
 
-**MuJoCo 3.10+ 原生就有 `<dcmotor>` 执行器**（含反电动势、电流饱和、电感、热模型、
+**MuJoCo 3.7+ 原生就有 `<dcmotor>` 执行器**（含反电动势、电流饱和、电感、热模型、
 齿槽转矩、LuGre 摩擦）—— 不需要自己写代码。
 
 把 MJCF 里的 `<position>` 换成：
@@ -135,17 +158,30 @@ python3 tools/verify_params.py
 <actuator>
   <!-- nominal = "voltage stall_torque no_load_speed" -->
   <dcmotor name="leg_l1_joint_motor" joint="leg_l1_joint"
-           nominal="24 40 6.4017"
-           input="pos vel ff"      <!-- 对应达妙 MIT 的 pos/vel/t_ff -->
-           saturation="12 0 0"     <!-- 连续扭矩 12 N·m -->
+           nominal="24 54 6.4017"
+           input="position"              <!-- ⚠️ 版本相关，见下 -->
+           controller="30 0 3 0 0 24"    <!-- kp ki kd slewmax Imax Vmax -->
            forcerange="-28 28"/>
 </actuator>
 ```
 
-MuJoCo 会**自动推出** `K = V/ω_no_load = 3.749`、`R = K·V/τ_stall = 2.249`，
+> ⚠️ **`input` 的写法因 MuJoCo 版本而异**，写错会直接 XML 报错：
+> - **3.11（本机）**：`input="position"` / `"velocity"` / `"voltage"`
+> - **3.12+**：改成空格分隔的新签名 `input="pos vel"`
+>
+> 本机 3.11 实测 `input="pos vel ff"` → `XML Error: invalid keyword`。
+> 升级 MuJoCo 前必须重验。
+
+MuJoCo 会**自动推出** `K = V/ω_no_load = 3.749`、`R = K·V/τ_stall = 1.666`，
 力矩公式为 `τ = (K/R)·v − (K²/R)·ω`（即官方 `τ = (Kt/R)(v − Ke·ω)`）。
 
-验证脚本：`tools/verify_mujoco_dcmotor.py`（实测扫电压，误差 0.00%）
+**本机实测（MuJoCo 3.11.0）**：
+- 空载稳态 `ω = V/K`，扫 24/18/12/6/3 V 误差 **0.00%**
+- `position` 模式跟踪：目标 0.5 rad → 收敛到 **0.4999**
+- **τ-ω 生效**：扫 `controller` 的 `Vmax` → 峰值力矩随电压线性变化
+- **负载复现**：加载 3.6~19.35 N·m，与官方曲线平均误差 **0.85%**（见上节叠加图）
+
+验证脚本：`tools/verify_mujoco_dcmotor.py`
 
 > 另见 `mujocolab/mjlab`（⭐3084, Apache-2.0）：MuJoCo 生态的 Isaac-Lab 风格框架，
 > 有完整的执行器模块（`dc_actuator.py` / `builtin_actuator.py` / `learned_actuator.py`）。
